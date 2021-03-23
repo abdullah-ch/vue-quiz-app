@@ -13,13 +13,16 @@
           v-for="(answers, index) in allOptions"
           :key="index"
           @click="selectedAns(index)"
-          :class="[selectedIndex === index ? 'selected' : '']"
+          :class="answerTyped(index)"
         >
           {{ answers }}
         </b-list-group-item>
       </b-list-group>
 
-      <b-button @click="submitAnswer">
+      <b-button
+        @click="submitAnswer"
+        :disabled="selectedIndex === null || answered"
+      >
         Submit
       </b-button>
       <b-button variant="success" @click="nextQuestion">
@@ -43,14 +46,14 @@ export default {
     return {
       selectedIndex: null,
       correctIndex: null,
-      shuffleArray: [],
-      ansArray: [],
+      answered: false,
     };
   },
   // watch listens for changes to the props
   watch: {
     currentQuestion() {
       this.selectedIndex = null;
+      this.answered = false;
     },
     allOptions() {
       this.correctIndex = this.allOptions.indexOf(
@@ -69,7 +72,6 @@ export default {
         ...this.currentQuestion.incorrect_answers,
         this.currentQuestion.correct_answer,
       ];
-
       //  console.log("array that is not shuffled is ", allOptions);
       allOptions = _.shuffle(allOptions);
       console.log("shuffled array is", allOptions);
@@ -89,7 +91,26 @@ export default {
       if (this.selectedIndex === this.correctIndex) {
         isCorrect = true;
       }
+      this.answered = true;
       this.increment(isCorrect);
+    },
+
+    answerTyped(index) {
+      let className = "";
+
+      if (this.answered && index === this.correctIndex) {
+        className = "correct";
+      } else if (!this.answered && index === this.selectedIndex) {
+        className = "selected";
+      } else if (
+        this.answered &&
+        index === this.selectedIndex &&
+        index !== this.correctIndex
+      ) {
+        className = "wrong";
+      }
+
+      return className;
     },
   },
 
@@ -125,11 +146,11 @@ export default {
 }
 
 .correct {
-  color: green;
+  background-color: green;
 }
 
 .wrong {
-  color: red;
+  background-color: red;
 }
 
 .selected {
