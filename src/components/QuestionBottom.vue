@@ -135,15 +135,19 @@ export default {
   cursor: pointer;
 }
 
+.button {
+  display: flex;
+}
 .btn {
-  justify-content: center;
-  margin-top: 1rem;
-  margin-right: 1rem;
+  /* display: flex; */
+
+  /* margin-top: 1rem;
+  margin-right: 1rem; */
 }
 
-.btn-secondary {
+/* .btn-secondary {
   margin-left: 9rem;
-}
+} */
 
 .correct {
   background-color: green;
